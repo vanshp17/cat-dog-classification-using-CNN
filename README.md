@@ -1,69 +1,94 @@
-# cat-dog-classification-using-CNN
+# Cat and Dog Classification using CNN
 
-### Step 1: Dataset Preparation
-1. **Download Dataset:**
-   - Kaggle dataset link: [Dogs vs. Cats](https://www.kaggle.com/datasets/salader/dogs-vs-cats/data).
-   - Create a Kaggle API token and use it to download the dataset.
+## Introduction
+This project involves building Convolutional Neural Networks (CNN) for classifying images of cats and dogs. The dataset used can be found [here](https://www.kaggle.com/datasets/salader/dogs-vs-cats/data). To access the dataset, you need to create an API token from your Kaggle account.
 
-2. **Unzip the Dataset:**
-   - Extract the downloaded dataset using the provided code, ensuring it is available in the '/content' directory.
+## Getting Started
 
-### Step 2: Data Preprocessing
-3. **Import Libraries:**
-   - Import necessary libraries, including TensorFlow, Keras, and others.
+### Prerequisites
+Make sure you have the required dependencies installed. You can use the following commands to set up your environment:
 
-4. **Data Generators:**
-   - Create data generators for training and validation datasets using `image_dataset_from_directory`.
-   - Normalize pixel values to the range (0,1) in the `process` function.
+```bash
+!mkdir -p ~/.kaggle
+!cp kaggle.json ~/.kaggle/
+```
 
-### Step 3: Model Definition and Training
-5. **Model 1:**
-   - Define a CNN model with convolutional and pooling layers.
-   - Train the model for 10 epochs and visualize accuracy and loss using Matplotlib.
+### Installation
+Download and unzip the dataset using the Kaggle API:
 
-6. **Model 1 Analysis:**
-   - Identify overfitting from the increasing validation loss and decreasing validation accuracy.
+```bash
+!kaggle datasets download -d salader/dogs-vs-cats
+```
 
-### Step 4: Reducing Overfitting
-7. **Ways to Reduce Overfitting:**
-   - Suggest strategies to reduce overfitting, including adding more data, data augmentation, regularization, dropout, batch normalization, and reducing model complexity.
+## Usage
 
-8. **Model 2:**
-   - Implement Model 2 with added Batch Normalization and Dropout layers.
-   - Train for 20 epochs and analyze accuracy and loss.
+### Input
+The input data is divided into batches using generators. The images are loaded and processed using TensorFlow and Keras libraries.
 
-9. **Model 2 Analysis:**
-   - Note overfitting occurrence.
+```python
+# generators- divide data into batches
+train_ds = keras.utils.image_dataset_from_directory(
+    directory='/content/train',
+    labels='inferred',
+    label_mode='int',
+    batch_size=32,
+    image_size=(256, 256)
+)
 
-### Step 5: Data Augmentation
-10. **Data Augmentation:**
-    - Implement data augmentation using `ImageDataGenerator` for training data.
+validation_ds = keras.utils.image_dataset_from_directory(
+    directory='/content/test',
+    labels='inferred',
+    label_mode='int',
+    batch_size=32,
+    image_size=(256, 256)
+)
+```
 
-### Step 6: Model 3 with Augmented Data
-11. **Model 3:**
-    - Define Model 3 with Batch Normalization, Dropout, and augmented data.
-    - Train for 25 epochs and visualize accuracy and loss.
+### Output
+The output is a binary classification indicating whether the image contains a cat or a dog.
 
-12. **Model 3 Analysis:**
-    - Save model weights and pickle the model for future use.
-    - Conclude that Model 3 is more generalized due to data augmentation.
+## Training
+The project includes the training of three different models:
 
-### Step 7: Transfer Learning - VGG16
-13. **Transfer Learning:**
-    - Use VGG16 pre-trained on ImageNet for transfer learning.
+1. **Model 1**: A basic CNN model with increasing complexity.
+2. **Model 2**: Enhanced with Batch Normalization and Dropout layers to reduce overfitting.
+3. **Model 3**: Further improvements with data augmentation.
 
-14. **Model 4:**
-    - Implement Model 4 with VGG16 base, additional layers, and fine-tune.
-    - Train for 15 epochs and visualize accuracy and loss.
+```python
+# Model 1
+model1 = Sequential()
+# ... (model architecture)
+model1.compile(optimizer='Adam', loss='binary_crossentropy', metrics=['accuracy'])
+history = model1.fit(train_ds, epochs=10, validation_data=validation_ds)
+```
 
-15. **Model 4 Analysis:**
-    - Save model weights and pickle the model for future use.
+## Results
+Each model's performance is evaluated and visualized using accuracy and loss plots.
 
-### Step 8: Conclusion
-16. **Conclusion:**
-    - Summarize key findings, noting the effectiveness of data augmentation and transfer learning in improving model generalization.
+```python
+import matplotlib.pyplot as plt
 
-17. **Save Model and Pickle:**
-    - Save model weights and pickle the final model for deployment.
+# Accuracy Plot
+plt.title('Accuracy')
+plt.plot(history.history['accuracy'], color='red', label='train')
+plt.plot(history.history['val_accuracy'], color='blue', label='validation')
+plt.legend()
+plt.show()
 
-These steps provide a comprehensive overview of the Cat and Dog Classification project, from data preparation to model training and analysis.
+# Loss Plot
+plt.title('Loss')
+plt.plot(history.history['loss'], color='red', label='train')
+plt.plot(history.history['val_loss'], color='blue', label='validation')
+plt.legend()
+plt.show()
+```
+
+## Contributing
+Feel free to contribute to the project by suggesting improvements or additional features. Fork the repository, make your changes, and submit a pull request.
+
+## License
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgments
+- Thanks to Kaggle for providing the dataset.
+- Acknowledgments to the TensorFlow and Keras communities for their valuable libraries.
